@@ -1,11 +1,12 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ProductService } from '../../core/services/product.service';
-import { Product } from '../../core/models/product.model';
+import { ProductService } from '../core/services/product.service';
+import { Product } from '../core/models/product.model';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,7 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
-import { MatChipModule } from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatBadgeModule } from '@angular/material/badge';
 import { CommonModule } from '@angular/common';
 
@@ -25,6 +26,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatButtonModule,
     MatIconModule,
     MatTableModule,
@@ -34,7 +36,7 @@ import { CommonModule } from '@angular/common';
     MatFormFieldModule,
     MatDialogModule,
     MatCardModule,
-    MatChipModule,
+    MatChipsModule,
     MatBadgeModule
   ],
   template: `
@@ -171,32 +173,35 @@ import { CommonModule } from '@angular/common';
     .stat-card {
       background: white;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+      padding: 20px;
       display: flex;
       align-items: center;
       gap: 16px;
+      border: 1px solid #e2e8f0;
     }
     .warning-card {
-      background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+      background: #fffbeb;
+      border-color: #fed7aa;
     }
     .stat-card mat-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
+      font-size: 40px;
+      width: 40px;
+      height: 40px;
+      color: #f59e0b;
     }
     .stat-content {
       display: flex;
       flex-direction: column;
     }
     .stat-number {
-      font-size: 36px;
+      font-size: 32px;
       font-weight: 700;
-      color: #d32f2f;
+      color: #1e293b;
     }
     .stat-label {
       font-size: 14px;
-      color: #757575;
+      color: #64748b;
       margin-top: 4px;
     }
     .product-info {
@@ -205,7 +210,7 @@ import { CommonModule } from '@angular/common';
     }
     .product-code {
       font-size: 12px;
-      color: #9e9e9e;
+      color: #94a3b8;
     }
     .stock-status {
       display: flex;
@@ -218,10 +223,10 @@ import { CommonModule } from '@angular/common';
     }
     .stock-unit {
       font-size: 12px;
-      color: #757575;
+      color: #64748b;
     }
     .low-stock .stock-number {
-      color: #d32f2f;
+      color: #ea580c;
     }
     .warning-icon {
       margin-left: 8px;
@@ -241,17 +246,17 @@ import { CommonModule } from '@angular/common';
       height: 16px;
     }
     .status-warning {
-      background-color: #fff3e0;
-      color: #ef6c00;
+      background-color: #fffbeb;
+      color: #c2410c;
     }
     .status-normal {
-      background-color: #e8f5e9;
-      color: #388e3c;
+      background-color: #ecfdf5;
+      color: #047857;
     }
     .section-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
-      color: #424242;
+      color: #334155;
       margin: 0 0 16px 0;
       display: flex;
       align-items: center;
@@ -267,24 +272,24 @@ import { CommonModule } from '@angular/common';
       justify-content: space-between;
       align-items: center;
       padding: 16px;
-      background-color: #fff8e1;
+      background-color: #fffbeb;
       border-radius: 8px;
-      border-left: 4px solid #ff9800;
+      border: 1px solid #fed7aa;
     }
     .warning-item-name {
       font-size: 15px;
       font-weight: 600;
-      color: #424242;
+      color: #334155;
     }
     .warning-item-meta {
       display: flex;
       gap: 24px;
       margin-top: 4px;
       font-size: 13px;
-      color: #757575;
+      color: #64748b;
     }
     .warning-item-meta strong {
-      color: #d32f2f;
+      color: #ea580c;
     }
   `]
 })
@@ -395,23 +400,28 @@ export class InventoryComponent implements OnInit {
   }
 }
 
+interface DialogData {
+  product: Product;
+}
+
 @Component({
   selector: 'app-stock-adjust-dialog',
   standalone: true,
   imports: [
+    CommonModule,
+    FormsModule,
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    MatDialogModule,
-    CommonModule
+    MatDialogModule
   ],
   template: `
     <h2 mat-dialog-title>库存调整 - 补货</h2>
     <mat-dialog-content>
       <div class="product-info">
-        <p><strong>商品：</strong>{{ product.name }}</p>
-        <p><strong>当前库存：</strong>{{ product.stock }} {{ product.unit || '个' }}</p>
-        <p><strong>预警线：</strong>{{ product.minStock }} {{ product.unit || '个' }}</p>
+        <p><strong>商品：</strong>{{ data.product.name }}</p>
+        <p><strong>当前库存：</strong>{{ data.product.stock }} {{ data.product.unit || '个' }}</p>
+        <p><strong>预警线：</strong>{{ data.product.minStock }} {{ data.product.unit || '个' }}</p>
       </div>
       
       <mat-form-field appearance="outline">
@@ -419,7 +429,7 @@ export class InventoryComponent implements OnInit {
         <input matInput type="number" [(ngModel)]="adjustment" min="1" required>
       </mat-form-field>
       
-      <p class="preview">调整后库存：<strong>{{ (product.stock + adjustment) }}</strong> {{ product.unit || '个' }}</p>
+      <p class="preview">调整后库存：<strong>{{ (data.product.stock + adjustment) }}</strong> {{ data.product.unit || '个' }}</p>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button mat-dialog-close>取消</button>
@@ -432,12 +442,13 @@ export class InventoryComponent implements OnInit {
     .product-info {
       margin-bottom: 20px;
       padding: 16px;
-      background-color: #f5f5f5;
+      background-color: #f8fafc;
       border-radius: 8px;
     }
     .product-info p {
       margin: 8px 0;
       font-size: 14px;
+      color: #475569;
     }
     mat-form-field {
       width: 100%;
@@ -445,25 +456,24 @@ export class InventoryComponent implements OnInit {
     .preview {
       margin-top: 16px;
       padding: 12px;
-      background-color: #e8f5e9;
+      background-color: #ecfdf5;
       border-radius: 8px;
       text-align: center;
     }
     .preview strong {
-      color: #388e3c;
+      color: #059669;
       font-size: 18px;
     }
   `]
 })
 export class StockAdjustDialogComponent {
-  product: Product;
   adjustment = 1;
+  data: DialogData;
   
-  private dialogRef = inject(MatDialog);
-  private data = inject<any>();
+  private dialogRef = inject(MatDialogRef<StockAdjustDialogComponent>);
 
   constructor() {
-    this.product = this.data.product;
+    this.data = inject<DialogData>(MAT_DIALOG_DATA);
   }
 
   onConfirm(): void {

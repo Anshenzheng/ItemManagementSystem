@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
@@ -13,6 +14,7 @@ import { Observable } from 'rxjs';
   selector: 'app-root',
   standalone: true,
   imports: [
+    CommonModule,
     MatSidenavModule,
     MatToolbarModule,
     MatListModule,
@@ -53,7 +55,7 @@ import { Observable } from 'rxjs';
         </mat-nav-list>
       </mat-sidenav>
       <mat-sidenav-content>
-        <mat-toolbar color="primary">
+        <mat-toolbar class="top-toolbar">
           <span class="toolbar-title">{{ title }}</span>
           <span class="spacer"></span>
           <span class="date-text">{{ currentDate }}</span>
@@ -70,51 +72,61 @@ import { Observable } from 'rxjs';
     }
     .sidenav {
       width: 240px;
-      background: linear-gradient(180deg, #fefefe 0%, #f5f5f5 100%);
-      border-right: 1px solid #e0e0e0;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
     }
     .sidenav-header {
       padding: 20px;
-      border-bottom: 1px solid #e0e0e0;
+      border-bottom: 1px solid #e2e8f0;
     }
     .logo-text {
       margin: 0;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
-      color: #d32f2f;
-      letter-spacing: 1px;
+      color: #0f172a;
+      letter-spacing: 0.5px;
     }
     .nav-text {
       margin-left: 12px;
-      font-size: 15px;
+      font-size: 14px;
+      color: #475569;
     }
     mat-nav-list a {
-      margin: 8px 12px;
+      margin: 6px 12px;
       border-radius: 8px;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
     }
     mat-nav-list a:hover {
-      background-color: rgba(211, 47, 47, 0.08);
+      background-color: #f1f5f9;
     }
     mat-nav-list a.active {
-      background-color: rgba(211, 47, 47, 0.15);
-      color: #d32f2f;
+      background-color: #eef2ff;
+      color: #4f46e5;
       font-weight: 500;
     }
+    mat-nav-list a.active .nav-text {
+      color: #4f46e5;
+    }
+    .top-toolbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
     .toolbar-title {
-      font-size: 18px;
-      font-weight: 500;
+      font-size: 16px;
+      font-weight: 600;
+      color: #1e293b;
     }
     .spacer {
       flex: 1 1 auto;
     }
     .date-text {
-      font-size: 14px;
-      opacity: 0.9;
+      font-size: 13px;
+      color: #64748b;
     }
     .content {
       padding: 24px;
-      background-color: #fafafa;
+      background-color: #f8fafc;
       min-height: calc(100vh - 64px);
     }
     .low-stock-badge {

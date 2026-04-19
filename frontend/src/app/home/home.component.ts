@@ -5,10 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { CommonModule } from '@angular/common';
-import { ProductService } from '../../core/services/product.service';
-import { OrderService } from '../../core/services/order.service';
-import { Product } from '../../core/models/product.model';
-import { SaleOrder } from '../../core/models/order.model';
+import { ProductService } from '../core/services/product.service';
+import { OrderService } from '../core/services/order.service';
+import { Product } from '../core/models/product.model';
+import { SaleOrder } from '../core/models/order.model';
 
 @Component({
   selector: 'app-home',
@@ -142,7 +142,7 @@ import { SaleOrder } from '../../core/models/order.model';
               <span class="order-customer">{{ order.customerName || '散客' }}</span>
               <span class="order-time">{{ formatDateTime(order.createTime) }}</span>
             </div>
-            <span class="order-amount">¥{{ order.totalAmount?.toFixed(2) }}</span>
+            <span class="order-amount">¥{{ order.totalAmount.toFixed(2) }}</span>
           </div>
         </div>
         <div class="empty-state" *ngIf="recentOrders.length === 0">
@@ -157,14 +157,14 @@ import { SaleOrder } from '../../core/models/order.model';
       margin-bottom: 32px;
     }
     .welcome-text h1 {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 600;
-      color: #333;
+      color: #1e293b;
       margin: 0 0 8px 0;
     }
     .subtitle {
       font-size: 14px;
-      color: #757575;
+      color: #64748b;
       margin: 0;
     }
 
@@ -177,58 +177,59 @@ import { SaleOrder } from '../../core/models/order.model';
     .stat-card {
       background: white;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+      padding: 20px;
       display: flex;
       align-items: center;
       gap: 16px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
+      border: 1px solid #e2e8f0;
     }
     .stat-card:hover {
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       transform: translateY(-2px);
     }
     .stat-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 12px;
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
     }
     .stat-icon mat-icon {
-      font-size: 28px;
-      width: 28px;
-      height: 28px;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
       color: white;
     }
     .product-icon {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #6366f1;
     }
     .warning-icon {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      background: #f59e0b;
     }
     .normal-icon {
-      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      background: #10b981;
     }
     .order-icon {
-      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      background: #8b5cf6;
     }
     .revenue-icon {
-      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      background: #ec4899;
     }
     .badge {
       position: absolute;
       top: -4px;
       right: -4px;
-      background: #d32f2f;
+      background: #ef4444;
       color: white;
       font-size: 11px;
       font-weight: 700;
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -240,13 +241,13 @@ import { SaleOrder } from '../../core/models/order.model';
       flex-direction: column;
     }
     .stat-number {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 700;
-      color: #333;
+      color: #1e293b;
     }
     .stat-label {
       font-size: 13px;
-      color: #757575;
+      color: #64748b;
       margin-top: 4px;
     }
 
@@ -261,26 +262,26 @@ import { SaleOrder } from '../../core/models/order.model';
       align-items: center;
       margin-bottom: 16px;
       padding-bottom: 12px;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #e2e8f0;
     }
     .warning-header {
-      background: #fff3e0;
+      background: #fffbeb;
       margin: -24px -24px 16px -24px;
       padding: 16px 24px;
       border-radius: 12px 12px 0 0;
-      border-bottom: none;
+      border-bottom: 1px solid #fef3c7;
     }
     .success-header {
-      background: #e8f5e9;
+      background: #ecfdf5;
       margin: -24px -24px 16px -24px;
       padding: 16px 24px;
       border-radius: 12px 12px 0 0;
-      border-bottom: none;
+      border-bottom: 1px solid #a7f3d0;
     }
     .card-title {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
-      color: #424242;
+      color: #334155;
       margin: 0;
       display: flex;
       align-items: center;
@@ -294,14 +295,17 @@ import { SaleOrder } from '../../core/models/order.model';
     .action-btn {
       flex: 1;
       min-width: 140px;
-      height: 56px;
-      font-size: 15px;
-      background: #f5f5f5;
-      color: #424242;
+      height: 52px;
+      font-size: 14px;
+      background: #f1f5f9;
+      color: #334155;
     }
     .action-btn.primary {
-      background: linear-gradient(135deg, #d32f2f 0%, #c2185b 100%);
+      background: #4f46e5;
       color: white;
+    }
+    .action-btn.primary:hover {
+      background: #4338ca;
     }
     .action-btn mat-icon {
       margin-right: 8px;
@@ -315,9 +319,10 @@ import { SaleOrder } from '../../core/models/order.model';
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 16px;
-      background-color: #fff8e1;
+      padding: 14px 16px;
+      background-color: #fffbeb;
       border-radius: 8px;
+      border: 1px solid #fef3c7;
     }
     .warning-info {
       display: flex;
@@ -327,24 +332,24 @@ import { SaleOrder } from '../../core/models/order.model';
     .product-name {
       font-size: 14px;
       font-weight: 600;
-      color: #424242;
+      color: #334155;
     }
     .stock-info {
       font-size: 12px;
-      color: #757575;
+      color: #64748b;
     }
     .stock-info strong {
-      color: #d32f2f;
+      color: #ea580c;
     }
     .status-chip {
       padding: 4px 12px;
       border-radius: 16px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
     }
     .status-chip.warning {
-      background-color: #ffccbc;
-      color: #d84315;
+      background-color: #fed7aa;
+      color: #c2410c;
     }
     .order-list {
       display: flex;
@@ -356,8 +361,9 @@ import { SaleOrder } from '../../core/models/order.model';
       justify-content: space-between;
       align-items: center;
       padding: 12px 16px;
-      background-color: #fafafa;
+      background-color: #f8fafc;
       border-radius: 8px;
+      border: 1px solid #e2e8f0;
     }
     .order-info {
       display: flex;
@@ -367,32 +373,32 @@ import { SaleOrder } from '../../core/models/order.model';
     .order-no {
       font-size: 14px;
       font-weight: 600;
-      color: #424242;
+      color: #334155;
     }
     .order-customer {
       font-size: 12px;
-      color: #757575;
+      color: #64748b;
     }
     .order-time {
       font-size: 11px;
-      color: #9e9e9e;
+      color: #94a3b8;
     }
     .order-amount {
       font-size: 16px;
       font-weight: 700;
-      color: #d32f2f;
+      color: #4f46e5;
     }
     .empty-state {
       text-align: center;
       padding: 32px;
-      color: #9e9e9e;
+      color: #94a3b8;
     }
     .empty-state mat-icon {
-      font-size: 48px;
-      width: 48px;
-      height: 48px;
+      font-size: 40px;
+      width: 40px;
+      height: 40px;
       margin-bottom: 12px;
-      opacity: 0.5;
+      opacity: 0.4;
     }
     .empty-state p {
       margin: 0;
